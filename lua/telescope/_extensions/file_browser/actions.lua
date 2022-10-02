@@ -572,7 +572,6 @@ fb_actions.clear_prompt = function(prompt_bufnr)
   local output = table.concat({unpack(words, 1, #words-1)}, " ")
   print(output)
 
-  fb_utils.redraw_border_title(current_picker)
 
   if prm == "" then
     local parent_dir = Path:new(finder.path):parent():absolute()
@@ -583,6 +582,8 @@ fb_actions.clear_prompt = function(prompt_bufnr)
     current_picker:refresh(finder, { new_prompt = output, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
     current_picker:reset_prompt(output)
   end
+
+  fb_utils.redraw_border_title(current_picker)
 end
 
 --- Change working directory of nvim to the selected file/folder in |telescope-file-browser.picker.file_browser|.

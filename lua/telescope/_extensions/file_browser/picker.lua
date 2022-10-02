@@ -109,9 +109,11 @@ fb_picker.file_browser = function(opts)
   pickers
     .new(opts, {
       prompt_title = opts.files and "File Browser" or "Folder Browser",
-      results_title = opts.files and Path:new(opts.path):make_relative(cwd) .. os_sep or "Results",
+      -- results_title = opts.files and Path:new(opts.path):make_relative(cwd) .. os_sep or "Results",
+      results_title = opts.files and opts.path or "Results",
       previewer = conf.file_previewer(opts),
       sorter = conf.file_sorter(opts),
+      prompt_prefix = fb_utils.get_browser_path(opts.path),
     })
     :find()
 end

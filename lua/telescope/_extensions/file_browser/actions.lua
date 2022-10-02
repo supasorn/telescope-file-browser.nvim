@@ -538,8 +538,9 @@ fb_actions.goto_parent_dir = function(prompt_bufnr, bypass)
   end
 
   finder.path = parent_dir
+
   fb_utils.redraw_border_title(current_picker)
-  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi })
+  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
 end
 
 --- Goto working directory of nvim in |telescope-file-browser.picker.file_browser|.
@@ -550,7 +551,36 @@ fb_actions.goto_cwd = function(prompt_bufnr)
   finder.path = vim.loop.cwd()
 
   fb_utils.redraw_border_title(current_picker)
-  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi })
+  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
+end
+
+--- Goto working directory of nvim in |telescope-file-browser.picker.file_browser|.
+---@param prompt_bufnr number: The prompt bufnr
+fb_actions.clear_prompt = function(prompt_bufnr)
+  local current_picker = action_state.get_current_picker(prompt_bufnr)
+  local finder = current_picker.finder
+
+  -- local prm = vim.api.nvim_buf_get_lines(prompt_bufnr, 0, -1, false)
+  -- print(prm[1])
+  local prm = current_picker:_get_prompt()
+  -- print(prm)
+  words = {}
+  for w in prm:gmatch("%S+") do 
+    table.insert(words, w)
+  end
+  -- print(table.concat(table.splice(words, 0, #words-1), " "))
+  local output = table.concat({unpack(words, 1, #words-1)}, " ")
+
+  fb_utils.redraw_border_title(current_picker)
+
+  if prm == "" then
+    local parent_dir = Path:new(finder.path):parent():absolute()
+    finder.path = parent_dir
+
+    current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
+  else
+    current_picker:refresh(finder, { new_prompt = output, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
+  end
 end
 
 --- Change working directory of nvim to the selected file/folder in |telescope-file-browser.picker.file_browser|.
@@ -564,7 +594,7 @@ fb_actions.change_cwd = function(prompt_bufnr)
   vim.cmd("cd " .. finder.path)
 
   fb_utils.redraw_border_title(current_picker)
-  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi })
+  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
   fb_utils.notify(
     "action.change_cwd",
     { msg = "Set the current working directory!", level = "INFO", quiet = finder.quiet }
@@ -579,7 +609,7 @@ fb_actions.goto_home_dir = function(prompt_bufnr)
   finder.path = vim.loop.os_homedir()
 
   fb_utils.redraw_border_title(current_picker)
-  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi })
+  current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
 end
 
 --- Toggle between file and folder browser for |telescope-file-browser.picker.file_browser|.

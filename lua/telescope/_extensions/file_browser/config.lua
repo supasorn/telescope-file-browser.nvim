@@ -19,9 +19,11 @@ _TelescopeFileBrowserConfig = {
       ["<A-y>"] = fb_actions.copy,
       ["<A-d>"] = fb_actions.remove,
       ["<C-o>"] = fb_actions.open,
-      ["<C-g>"] = fb_actions.goto_parent_dir,
+      -- ["<C-g>"] = fb_actions.goto_parent_dir,
+      ["<C-g>"] = fb_actions.goto_cwd,
       ["<C-e>"] = fb_actions.goto_home_dir,
-      ["<C-w>"] = fb_actions.goto_cwd,
+      -- ["<C-w>"] = fb_actions.goto_cwd,
+      ["<C-w>"] = fb_actions.clear_prompt,
       ["<C-t>"] = fb_actions.change_cwd,
       ["<C-f>"] = fb_actions.toggle_browser,
       ["<C-h>"] = fb_actions.toggle_hidden,
@@ -73,7 +75,7 @@ _TelescopeFileBrowserConfig = {
       finder.files = true
       finder.path = path
       fb_utils.redraw_border_title(current_picker)
-      current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi })
+      current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi, new_prefix = fb_utils.get_browser_path(finder.path)})
     end)
     return true
   end,

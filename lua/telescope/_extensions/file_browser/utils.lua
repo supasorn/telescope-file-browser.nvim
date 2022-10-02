@@ -115,7 +115,8 @@ fb_utils.redraw_border_title = function(current_picker)
   if current_picker.results_border and not finder.results_title then
     local new_title
     if finder.files or finder.cwd_to_path then
-      new_title = Path:new(finder.path):make_relative(vim.loop.cwd())
+      -- new_title = Path:new(finder.path):make_relative(vim.loop.cwd())
+      new_title = finder.path
     else
       new_title = finder.cwd
     end
@@ -123,6 +124,14 @@ fb_utils.redraw_border_title = function(current_picker)
     new_title = truncate(new_title ~= os_sep and new_title .. os_sep or new_title, width, nil, -1)
     current_picker.results_border:change_title(new_title)
   end
+end
+
+fb_utils.get_browser_path = function(path)
+  local out = require "plenary.path":new(path):make_relative(vim.loop.cwd())
+  if out:sub(-1, -1) == '/' then
+    return out
+  end
+  return out .. '/'
 end
 
 fb_utils.group_by_type = function(tbl)

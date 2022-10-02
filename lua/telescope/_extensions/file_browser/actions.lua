@@ -570,6 +570,7 @@ fb_actions.clear_prompt = function(prompt_bufnr)
   end
   -- print(table.concat(table.splice(words, 0, #words-1), " "))
   local output = table.concat({unpack(words, 1, #words-1)}, " ")
+  print(output)
 
   fb_utils.redraw_border_title(current_picker)
 
@@ -580,6 +581,7 @@ fb_actions.clear_prompt = function(prompt_bufnr)
     current_picker:refresh(finder, { reset_prompt = true, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
   else
     current_picker:refresh(finder, { new_prompt = output, multi = current_picker._multi, new_prefix=fb_utils.get_browser_path(finder.path)})
+    current_picker:reset_prompt(output)
   end
 end
 
